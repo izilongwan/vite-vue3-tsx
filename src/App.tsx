@@ -1,0 +1,18 @@
+import '@/assets/base.less'
+import { defineComponent, KeepAlive } from 'vue'
+import { RouterView, } from 'vue-router'
+
+export default defineComponent({
+  setup(props, ctx) {
+    return () =>
+      <RouterView>
+        {
+          ({ Component }: { Component: any }) => (
+            <KeepAlive>
+              <Component />
+            </KeepAlive>
+          )
+        }
+      </RouterView>
+  }
+})
