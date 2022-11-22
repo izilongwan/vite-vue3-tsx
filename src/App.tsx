@@ -7,7 +7,7 @@ export default defineComponent({
     return () =>
       <RouterView>
         {
-          ({ Component }: { Component: any }) => (
+          ({ Component }: { Component: typeof RouterView }) => (
             <KeepAlive>
               <Component />
             </KeepAlive>
