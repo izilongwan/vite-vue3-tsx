@@ -93,6 +93,7 @@ export default defineComponent({
         >
           <ElInput
             placeholder="请输入密码"
+            type="password"
             v-model={data.user.password}
             v-slots={{
               prefix: () => <i class="el-input__icon el-icon-unlock"></i>

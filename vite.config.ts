@@ -35,4 +35,7 @@ export default ({ mode }) =>
         "@": resolve(__dirname, "/src"),
       },
     },
+    build: {
+      sourcemap: true,
+    }
   });
