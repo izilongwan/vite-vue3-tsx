@@ -1,9 +1,9 @@
 import { useStore, Dispatch } from 'vuex'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useRouter, Router } from 'vue-router'
 import { SET_USER } from '@/store/login/actionType'
 import BaseNav from '@/components/base-nav'
-import TodoList from '@/components/TodoList'
+import TodoList from '@/components/todo-list'
 
 import {
   ElDropdown,
@@ -41,16 +41,12 @@ export default defineComponent({
           style={ {
             marginBottom: '15px'
           } }
-          v-slots={ {
-            dropdown: () => DropdownMenu(store.dispatch, router)
-          } }
+          v-slots={ { dropdown: () => DropdownMenu(store.dispatch, router) } }
         >
           <span>
             <i
               class="el-icon-s-tools el-icon--right"
-              style={ {
-                marginRight: '8px'
-              } }
+              style={ { marginRight: '8px' } }
             ></i>
             设置
           </span>
