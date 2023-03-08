@@ -5,22 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
+      "name": "Vue: Chrome",
       "url": "http://localhost:8888",
-      "webRoot": "${workspaceFolder}",
-      "pathMapping": {
-        "/_karma_webpack_": "${workspaceFolder}"
-      },
-      "sourceMapPathOverrides": {
-        "webpack:/*": "${webRoot}/*",
-        "webpack:///src/*": "${webRoot}/*",
-        "/./*": "${webRoot}/*",
-        "/src/*": "${webRoot}/*",
-        "/*": "*",
-        "/./~/*": "${webRoot}/node_modules/*"
-      },
+      "webRoot": "${workspaceFolder}/src"
     }
   ]
 }
