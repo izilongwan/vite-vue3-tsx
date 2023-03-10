@@ -1,9 +1,9 @@
-import { SET_USER } from '@/store/login/actionType';
-import { defineComponent, ref } from 'vue';
-import { useStore } from 'vuex';
-import Child from '@/components/Child';
-import UserInfo from '@/components/UserInfo';
-import BaseNav from '@/components/base-nav';
+import BaseNav from '@/components/base-nav'
+import Child from '@/components/Child'
+import UserInfo from '@/components/UserInfo'
+import { SET_USER } from '@/store/login/actionType'
+import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'About',
