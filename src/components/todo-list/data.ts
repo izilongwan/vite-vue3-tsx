@@ -1,7 +1,7 @@
 import { ElMessage } from 'element-plus'
 import { Ref } from 'vue'
 
-export function addList(list: Ref<IListData[]>, content: Ref<string>, ) {
+export function addList(list: Ref<IListData[]>, content: Ref<string>) {
   if (!content.value) {
     ElMessage.warning('请输入todo信息')
     return
