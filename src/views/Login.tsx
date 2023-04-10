@@ -15,9 +15,7 @@ import {
 
 export default defineComponent({
   setup() {
-    const data = reactive<{
-      user: IUser
-    }>({
+    const data = reactive<{ user: IUser }>({
       user: {
         name: '',
         password: ''
@@ -26,6 +24,10 @@ export default defineComponent({
     const loginForm = ref<typeof ElForm | null>(null)
     const { dispatch } = useStore()
     const router = useRouter()
+    const toolsTipOption = {
+      placement: 'top',
+      content: '账号：admin 密码：123456'
+    }
 
     onMounted(() => {
       ElNotification({
@@ -46,7 +48,7 @@ export default defineComponent({
             })
 
             localStorage.setItem('user', JSON.stringify(data.user))
-            dispatch(`login/${SET_USER}`, data.user)
+            dispatch(`login/${ SET_USER }`, data.user)
           } else {
             data.user = {
               name: '',
@@ -69,47 +71,41 @@ export default defineComponent({
     }
 
     return () => (
-      <ElForm model={data.user} ref={loginForm}>
+      <ElForm model={ data.user } ref={ loginForm }>
         <ElFormItem
           label="账号"
           prop="name"
-          rules={[{ required: true, message: '请输入用户名', trigger: 'blur' }]}
+          rules={ [{ required: true, message: '请输入用户名', trigger: 'blur' }] }
         >
           <ElInput
             placeholder="请输入用户名"
-            v-model={data.user.name}
-            v-slots={{
+            v-model={ data.user.name }
+            v-slots={ {
               prefix: () => <i class="el-input__icon el-icon-user"></i>
-            }}
-            {...{
-              onKeyup: keyUp
-            }}
+            } }
+            { ...{ onKeyup: keyUp } }
           ></ElInput>
         </ElFormItem>
         <ElFormItem
           label="密码"
           prop="password"
-          rules={[{ required: true, message: '请输入密码', trigger: 'blur' }]}
+          rules={ [{ required: true, message: '请输入密码', trigger: 'blur' }] }
         >
           <ElInput
             placeholder="请输入密码"
             type="password"
-            v-model={data.user.password}
-            v-slots={{
+            v-model={ data.user.password }
+            v-slots={ {
               prefix: () => <i class="el-input__icon el-icon-unlock"></i>
-            }}
-            {...{
-              onKeyup: keyUp
-            }}
+            } }
+            { ...{ onKeyup: keyUp } }
           ></ElInput>
         </ElFormItem>
         <ElFormItem class="login-button">
-          <ElTooltip placement="top" content="账号：admin 密码：123456">
+          <ElTooltip { ...{ toolsTipOption } }>
             <ElButton
               type="primary"
-              {...{
-                onClick: login
-              }}
+              { ...{ onClick: login } }
             >
               登陆
             </ElButton>

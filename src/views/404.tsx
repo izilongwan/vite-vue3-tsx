@@ -11,9 +11,7 @@ export default defineComponent({
         <ElButton
           type="primary"
           {...{
-            onClick: () => {
-              router.push({ name: 'login' })
-            }
+            onClick: () => router.push({ name: 'login' })
           }}
         >
           返回首页
