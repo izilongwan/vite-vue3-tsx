@@ -1,8 +1,8 @@
-import { defineComponent, toRefs } from 'vue'
+import { defineComponent } from 'vue'
 import {
   ElSkeleton,
   ElDescriptions,
-  ElDescriptionsItem
+  ElDescriptionsItem,
 } from 'element-plus'
 
 export default defineComponent({
@@ -25,16 +25,12 @@ export default defineComponent({
         } }
       >
         <ElDescriptionsItem
-          { ...{
-            label: '用户名'
-          } }
+          { ...{ label: '用户名' } }
         >
           { username }
         </ElDescriptionsItem>
         <ElDescriptionsItem
-          { ...{
-            label: '密码'
-          } }
+          { ...{ label: '密码' } }
         >
           { this.password }
         </ElDescriptionsItem>

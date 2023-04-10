@@ -6,7 +6,7 @@ export const RenderComponent = defineComponent({
   props: {
     title: String
   },
-  setup () {
+  setup() {
     const count = ref<number>(1)
 
     const timer = setInterval(() => {
@@ -26,11 +26,11 @@ export const RenderComponent = defineComponent({
     const { count, $slots, title } = this
     return (
       <div class="render-component">
-        {renderSlot($slots, 'prefix')} {count}
+        { renderSlot($slots, 'prefix') } { count }
         <br />
-        这是props：{title}
+        这是props：{ title }
         <br />
-        {renderSlot($slots, 'default')}
+        { renderSlot($slots, 'default') }
       </div>
     )
   }

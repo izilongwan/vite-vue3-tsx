@@ -44,3 +44,17 @@ export type Data = {
   name: string
   children?: Datas
 }
+
+export function findData(data: Datas, value: string) {
+  return data.reduce((p, c) => {
+    const { id, name } = c
+
+    if (String(id).includes(value) || name.includes(value)) {
+      p.push(c)
+    } else if (c.children) {
+      p.push(...findData(c.children, value))
+    }
+
+    return p
+  }, [] as Datas)
+}

@@ -33,28 +33,26 @@ export default defineComponent({
     return () => (
       <div class="child">
         <ElButton
-          type={props.type}
-          size={props.size}
-          {...{
+          type={ props.type }
+          size={ props.size }
+          { ...{
             onClick: () => {
               flag.value = !flag.value
               emit('changePswVisible', flag.value)
             }
-          }}
+          } }
         >
-          {flag.value ? '隐藏密码' : '显示密码'}
+          { flag.value ? '隐藏密码' : '显示密码' }
         </ElButton>
         <br />
-        {slots?.default?.()}
+        { slots?.default?.() }
         <br />
-        {slots?.suffix?.('作用域插槽示例')}
-        prefix具名插槽内容 : {slots?.prefix?.()}
+        { slots?.suffix?.('作用域插槽示例') }
+        prefix具名插槽内容 : { slots?.prefix?.() }
         <br />
         <RenderComponent
-          title={title.value}
-          v-slots={{
-            prefix: () => <i class="el-icon-medal-1"></i>
-          }}
+          title={ title.value }
+          v-slots={ { prefix: () => <i class="el-icon-medal-1"></i> } }
         >
           这是render形式的组件示例
         </RenderComponent>
