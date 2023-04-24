@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import styleImport from 'vite-plugin-style-import'
+import tplPlugin from './plugin/tpl-plugin'
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
@@ -27,6 +28,7 @@ export default ({ mode }) => {
           },
         ],
       }),
+      tplPlugin(),
     ],
     // base: mode === 'development' ? '/' : './',
     server: {
