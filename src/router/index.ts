@@ -1,3 +1,4 @@
+import store, { SET_KEY_VALUE } from '@/store'
 import {
   createRouter,
   RouteRecordRaw,
@@ -15,7 +16,8 @@ const routes: RouteRecordRaw[] = [
     path: '/home',
     name: 'home',
     meta: {
-      type: 'home'
+      type: 'home',
+      menu: true,
     },
     component: () => import('@/views/Home')
   },
@@ -31,14 +33,10 @@ const routes: RouteRecordRaw[] = [
     path: '/about',
     name: 'about',
     meta: {
-      type: 'about'
+      type: 'about',
+      menu: true,
     },
     component: () => import('@/views/About')
-  },
-  {
-    path: '/user-search',
-    name: 'user-search',
-    component: () => import('@/views/UserSearch')
   },
   {
     path: '/:pathMatch(.*)*',
@@ -54,6 +52,8 @@ const router = createRouter({
 
 router.beforeEach(
   (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    store.dispatch(SET_KEY_VALUE, { key: 'routes', value: router.getRoutes() })
+
     const user = localStorage.getItem('user')
     if (to.meta.type === 'login' && user) {
       next({ name: 'home' })
@@ -68,5 +68,31 @@ router.beforeEach(
     next()
   }
 )
+
+const addRoutes: RouteRecordRaw[] = [
+  {
+    path: '/user-search',
+    name: 'user-search',
+    meta: {
+      menu: true,
+    },
+    component: () => import('@/views/UserSearch')
+  },
+]
+
+export function addRoute() {
+  addRoutes.forEach(r => {
+    if (router.hasRoute(r.name!)) {
+      return
+    }
+    router.addRoute(r)
+  })
+  store.dispatch(SET_KEY_VALUE, { key: 'routes', value: router.getRoutes() })
+}
+
+export function removeRoute() {
+  addRoutes.forEach(r => router.hasRoute(r.name!) && router.removeRoute(r.name!))
+  store.dispatch(SET_KEY_VALUE, { key: 'routes', value: router.getRoutes() })
+}
 
 export default router

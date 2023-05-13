@@ -10,18 +10,25 @@ import {
   ElDropdownMenu,
   ElDropdownItem,
 } from 'element-plus'
+import { addRoute, removeRoute } from '@/router'
 
 // 函数式组件
 const DropdownMenu = (dispatch: Dispatch, router: Router): JSX.Element => (
   <ElDropdownMenu>
     <ElDropdownItem
-      { ...{
-        onClick: () => {
-          dispatch(`login/${ SET_USER }`, {})
-          localStorage.removeItem('user')
-          router.push({ name: 'login' })
-        }
-      } }
+      { ...{ onClick: addRoute } }
+      icon="el-icon-switch-button"
+    >
+      添加【search】路由
+    </ElDropdownItem>
+    <ElDropdownItem
+      { ...{ onClick: removeRoute } }
+      icon="el-icon-switch-button"
+    >
+      移除【search】路由
+    </ElDropdownItem>
+    <ElDropdownItem
+      { ...{ onClick: () => logout(dispatch, router) } }
       icon="el-icon-switch-button"
     >
       退出登录
@@ -59,3 +66,10 @@ export default defineComponent({
     )
   }
 })
+
+function logout(dispatch: Dispatch, router: Router) {
+  dispatch(`login/${ SET_USER }`, {})
+  localStorage.removeItem('user')
+  router.push({ name: 'login' })
+  removeRoute()
+}

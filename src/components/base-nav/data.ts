@@ -1,5 +1,5 @@
-export const aNavData = [
-  { to: '/', name: 'Home' },
-  { to: '/about', name: 'About' },
-  { to: '/user-search', name: 'UserSearch' }
-]
+import { RouteRecord } from 'vue-router'
+
+export function getRoutes(routes: RouteRecord[]) {
+  return routes.filter(o => o.meta?.menu)
+}
