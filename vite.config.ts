@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import styleImport from 'vite-plugin-style-import'
 import tplPlugin from './plugin/tpl-plugin'
+import { getProxyUrlMap } from './src/util/tool'
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
@@ -33,13 +34,7 @@ export default ({ mode }) => {
     // base: mode === 'development' ? '/' : './',
     server: {
       port: 8888,
-      proxy: {
-        [env.VITE_API_URL]: {
-          target: env.VITE_API_PROXY_URL,
-          changeOrigin: true,
-          rewrite: path => path.replace(new RegExp(`^${ env.VITE_API_URL }`), ''),
-        },
-      }
+      proxy: getProxyUrlMap(env),
     },
     resolve: {
       alias: {

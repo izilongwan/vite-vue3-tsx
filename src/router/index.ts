@@ -39,6 +39,33 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/About')
   },
   {
+    path: '/blog',
+    name: 'blog',
+    meta: {
+      type: 'blog',
+      menu: true,
+    },
+    component: () => import('@/views/Blog')
+  },
+  {
+    path: '/blog-detail/:code',
+    name: 'blogDetail',
+    meta: {
+      type: 'blogDetail',
+      menu: false,
+    },
+    component: () => import('@/views/BlogDetail')
+  },
+  {
+    path: '/blog-edit/:code?',
+    name: 'blogEdit',
+    meta: {
+      type: 'blogEdit',
+      menu: false,
+    },
+    component: () => import('@/views/BlogEdit')
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     component: () => import('@/views/404')

@@ -2,6 +2,8 @@
 declare global {
   interface Window {
     foo: string
+    Vditor: any
+    Catalog: any
   }
 }
 
