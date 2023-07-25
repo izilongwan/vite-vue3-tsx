@@ -1,4 +1,3 @@
-import BaseNav from '@/components/base-nav'
 import Child from '@/components/Child'
 import UserInfo from '@/components/UserInfo'
 import { SET_USER } from '@/store/login/actionType'
@@ -47,8 +46,6 @@ export default defineComponent({
 
     return (
       <div class="about-page">
-        <BaseNav />
-
         <Child
           type="primary"
           size="small"

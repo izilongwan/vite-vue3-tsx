@@ -1,17 +1,12 @@
-import { useStore } from 'vuex'
 import { IUser } from '@/store/login'
-import { useRouter } from 'vue-router'
 import { SET_USER } from '@/store/login/actionType'
-import { defineComponent, ref, reactive, onMounted } from 'vue'
+import style from '@/style/login.module.less'
 import {
-  ElForm,
-  ElInput,
-  ElButton,
-  ElMessage,
-  ElTooltip,
-  ElFormItem,
-  ElNotification
+  ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElNotification, ElTooltip
 } from 'element-plus'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   setup() {
@@ -71,7 +66,7 @@ export default defineComponent({
     }
 
     return () => (
-      <ElForm model={ data.user } ref={ loginForm }>
+      <ElForm class={ style.login_wrap } model={ data.user } ref={ loginForm }>
         <ElFormItem
           label="账号"
           prop="name"

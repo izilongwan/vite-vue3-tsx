@@ -1,9 +1,9 @@
 import { addBlogDetail, BlogDetail, getBlogDetail, updateBlogDetail } from '@/api'
-import style from '@/assets/blog_edit.module.less'
+import style from '@/style/blog_edit.module.less'
 import { ArrowLeftBold, CircleCheck } from '@element-plus/icons-vue'
 import { ElButton, ElMessage } from 'element-plus'
 import Vditor from 'vditor'
-import 'vditor/src/assets/less/index.less'
+import 'vditor/src/style/less/index.less'
 import { defineComponent, InputHTMLAttributes, onActivated, onDeactivated, onMounted, onUnmounted, reactive, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

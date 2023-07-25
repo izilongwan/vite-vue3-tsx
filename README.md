@@ -111,7 +111,7 @@ $ yarn create @vitejs/app
 
 ```bash
 │  ├─public # 静态资源目录
-│  │      favicon.ico 
+│  │      favicon.ico
 │  │
 │  ├─src
 │  │  │  App.vue # 入口vue文件
@@ -126,7 +126,7 @@ $ yarn create @vitejs/app
 │  │         HelloWorld.vue
 │  │
 │  │ .gitignore
-│  │ index.html # Vite项目的入口文件 
+│  │ index.html # Vite项目的入口文件
 │  │ package.json
 │  │ README.md
 │  │ tsconfig.json # tsconfig配置文件
@@ -188,7 +188,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue/vue3-recommended',
-    'plugin:@typescript-eslint/recommended', 
+    'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended'
   ],
   rules: {}
@@ -508,7 +508,7 @@ createApp(App).use(router).mount("#app");
 
 ```tsx
 # App.tsx
-import "@/assets/base.less"
+import "@/style/base.less"
 import { defineComponent } from "vue";
 import { RouterView } from "vue-router"; //从vue router中引入RouterView组件 实际上也可以不用引入直接使用
 
@@ -546,7 +546,7 @@ $ yarn add vuex@4.0.1
 ```basic
 - src
   |- store
-  |  | index.ts 
+  |  | index.ts
   |  |- home
   |  |  | index.ts
   |  |  | actionType.ts
@@ -595,7 +595,7 @@ export interface ILoginState {
   user: IUser;
 }
 
-// Module这个类型可以传两个范型变量 第一个是当前模块state的对象接口类型 第二个是主仓库state的对象接口类型 
+// Module这个类型可以传两个范型变量 第一个是当前模块state的对象接口类型 第二个是主仓库state的对象接口类型
 const LoginStore: Module<ILoginState, {}> = {
   namespaced: true,
   state: {
@@ -763,7 +763,7 @@ import { defineComponent, ref } from "vue";
 const App = defineComponent({
   setup(){
     const size = ref<"large" | "medium" | "small" | "mini">("mini")
-    return () => 
+    return () =>
       <Button size={size.value}></Button> //此处直接换成jsx的模版语法 效果和v-bind是一致的
   }
 });
@@ -1070,7 +1070,7 @@ const App = defineComponent({
   setup(){
     const router = useRouter();
     const route = useRoute();
-    
+
     function go(pathName:string){
       // 跳转路由
       router.push({
@@ -1079,12 +1079,12 @@ const App = defineComponent({
           value: "路由传参"
         }
       })
-      
+
       // 取路由传递的参数 params的同理
       const { query } = route;
       console.log(query)
     }
-    
+
     return () => <>
       <button onClick={() => {go('home')}}>跳转home</button>
       <button onClick={() => {go('login')}}>跳转login</button>
@@ -1109,12 +1109,12 @@ const App = defineComponent({
     const { state, dispatch } = useStore();
     // 此处最好用readonly包裹暴露出的state，让其成为只读属性 避免直接修改
     const loginState = computed(() => readonly(store.state.login));
-    
+
     function modifyUserInfo(){
       // 直接调用dispatch 用法和vue2中一致
       dispatch(`login/${SET_USER}`,{})
     }
-    
+
     return () => <>
       <button onClick={modifyUserInfo}>修改state</button>
       <div>{loginState.user} {loginState.password}</div>
@@ -1130,4 +1130,3 @@ const App = defineComponent({
 至此相关示例解析就全部结束了，本文示例源码在这个仓库 [vite-vue3-tsx](https://github.com/cangshudada/vite-vue3-tsx) 有兴趣的欢迎fork下来跑一跑，也能对vue3相关语法更加熟悉。
 
 我本人写此文章也只是帮助初学vue3和tsx的同学建立一个较完善的框架，文章肯定也有本人认知不甚清晰的地方，欢迎各位多多交流，互相进步！
-

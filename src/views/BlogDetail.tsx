@@ -1,10 +1,10 @@
 import { BlogDetail, getBlogDetail } from '@/api'
-import 'progress-catalog/src/progress-catalog.css'
+import style from '@/style/blog_detail.module.less'
 import Catalog from 'progress-catalog'
-import style from '@/assets/blog_detail.module.less'
+import 'progress-catalog/src/progress-catalog.css'
+import Vaditor from 'vditor'
 import { defineComponent, onActivated, reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import Vaditor from 'vditor'
 
 interface State {
   code: string

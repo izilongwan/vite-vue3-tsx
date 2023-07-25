@@ -1,6 +1,6 @@
-import '@/assets/base.less'
+import '@/style/base.less'
 import { defineComponent, KeepAlive } from 'vue'
-import { RouterView, } from 'vue-router'
+import { RouterView } from 'vue-router'
 
 export default defineComponent({
   setup(props, ctx) {

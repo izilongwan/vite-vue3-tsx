@@ -10,16 +10,69 @@ import {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/login'
-  },
-  {
-    path: '/home',
-    name: 'home',
+    redirect: '/about',
+    name: '/',
     meta: {
-      type: 'home',
+      type: '/',
       menu: true,
     },
-    component: () => import('@/views/Home')
+    component: () => import('@/views/Home'),
+    children: [
+      {
+        path: '/about',
+        name: 'about',
+        meta: {
+          type: 'about',
+          menu: true,
+        },
+        component: () => import('@/views/About')
+      },
+      {
+        path: '/blog',
+        name: 'blog',
+        meta: {
+          type: 'blog',
+          menu: true,
+        },
+        component: () => import('@/views/Blog')
+      },
+      {
+        path: '/blog-detail/:code',
+        name: 'blogDetail',
+        meta: {
+          type: 'blogDetail',
+          menu: false,
+        },
+        component: () => import('@/views/BlogDetail')
+      },
+      {
+        path: '/blog-edit/:code?',
+        name: 'blogEdit',
+        meta: {
+          type: 'blogEdit',
+          menu: false,
+        },
+        component: () => import('@/views/BlogEdit')
+      },
+      {
+        path: '/apiCode',
+        name: 'apiCode',
+        meta: {
+          type: 'apiCode',
+          menu: true,
+        },
+        component: () => import('@/views/ApiCode')
+      },
+      {
+        path: '/apiCode-detail/:code',
+        name: 'apiCodeDetail',
+        meta: {
+          type: 'apiCodeDetail',
+          menu: false,
+        },
+        component: () => import('@/views/ApiCodeDetail')
+      },
+    ],
   },
   {
     path: '/login',
@@ -28,42 +81,6 @@ const routes: RouteRecordRaw[] = [
       type: 'login'
     },
     component: () => import('@/views/Login')
-  },
-  {
-    path: '/about',
-    name: 'about',
-    meta: {
-      type: 'about',
-      menu: true,
-    },
-    component: () => import('@/views/About')
-  },
-  {
-    path: '/blog',
-    name: 'blog',
-    meta: {
-      type: 'blog',
-      menu: true,
-    },
-    component: () => import('@/views/Blog')
-  },
-  {
-    path: '/blog-detail/:code',
-    name: 'blogDetail',
-    meta: {
-      type: 'blogDetail',
-      menu: false,
-    },
-    component: () => import('@/views/BlogDetail')
-  },
-  {
-    path: '/blog-edit/:code?',
-    name: 'blogEdit',
-    meta: {
-      type: 'blogEdit',
-      menu: false,
-    },
-    component: () => import('@/views/BlogEdit')
   },
   {
     path: '/:pathMatch(.*)*',
@@ -83,7 +100,7 @@ router.beforeEach(
 
     const user = localStorage.getItem('user')
     if (to.meta.type === 'login' && user) {
-      next({ name: 'home' })
+      next({ name: '/' })
       return
     }
 
@@ -108,12 +125,7 @@ const addRoutes: RouteRecordRaw[] = [
 ]
 
 export function addRoute() {
-  addRoutes.forEach(r => {
-    if (router.hasRoute(r.name!)) {
-      return
-    }
-    router.addRoute(r)
-  })
+  addRoutes.forEach(r => !router.hasRoute(r.name!) && router.addRoute('/', r))
   store.dispatch(SET_KEY_VALUE, { key: 'routes', value: router.getRoutes() })
 }
 

@@ -1,4 +1,4 @@
-import { execHttp, http, queryHttp } from '@/util/http'
+import { execHttp, http, HttpResponse, queryHttp } from '@/util/http'
 
 const { VITE_API_URL } = import.meta.env
 
@@ -36,4 +36,15 @@ export function addBlogDetail(param: BlogDetail) {
 
 export function updateBlogDetail(param: BlogDetail) {
   return execHttp<number>({ apiCode: 'UPDATE_BLOG_DETAIL', param })
+}
+
+export interface ApiCode {
+  apiCode: string;
+  apiSql: string;
+  description: string;
+  apiType: string;
+}
+
+export function getApiCode(param: Record<string, unknown> = {}) {
+  return queryHttp<HttpResponse<ApiCode[]>>({ apiCode: 'GET_API_CODE', ...param }, true)
 }
