@@ -1,9 +1,10 @@
-import { execHttp, http, HttpResponse, queryHttp } from '@/util/http'
+import { LoadingMethod } from '@/hook'
+import { execHttp, queryHttp, queryHttpOrigin } from '@/util/http'
 
 const { VITE_API_URL } = import.meta.env
 
 export function getTestManu() {
-  return http({
+  return queryHttp({
     url: `${ VITE_API_URL }/test/manu`
   })
 }
@@ -22,29 +23,42 @@ export interface BlogDetail extends Blog {
   mdText: string
 }
 
-export function getBlogs() {
-  return queryHttp<Blog[]>({ apiCode: 'GET_BLOG' })
+export function getBlogs(setLoading?: LoadingMethod) {
+  return queryHttp<Blog[]>({ apiCode: 'GET_BLOG' }, setLoading)
 }
 
-export function getBlogDetail(bId: string) {
-  return queryHttp<BlogDetail[]>({ apiCode: 'GET_BLOG_DETAIL', param: { bId } })
+export function getBlogDetail(bId: string, setLoading?: LoadingMethod) {
+  return queryHttp<BlogDetail[]>({ apiCode: 'GET_BLOG_DETAIL', param: { bId } }, setLoading)
 }
 
-export function addBlogDetail(param: BlogDetail) {
-  return execHttp<number>({ apiCode: 'ADD_BLOG_DETAIL', param })
+export function addBlogDetail(param: BlogDetail, setLoading?: LoadingMethod) {
+  return execHttp<number>({ apiCode: 'ADD_BLOG_DETAIL', param }, setLoading)
 }
 
-export function updateBlogDetail(param: BlogDetail) {
-  return execHttp<number>({ apiCode: 'UPDATE_BLOG_DETAIL', param })
+export function updateBlogDetail(param: BlogDetail, setLoading?: LoadingMethod) {
+  return execHttp<number>({ apiCode: 'UPDATE_BLOG_DETAIL', param }, setLoading)
 }
 
 export interface ApiCode {
   apiCode: string;
-  apiSql: string;
+  state: number;
   description: string;
   apiType: string;
+  infoJson: string
 }
 
-export function getApiCode(param: Record<string, unknown> = {}) {
-  return queryHttp<HttpResponse<ApiCode[]>>({ apiCode: 'GET_API_CODE', ...param }, true)
+export function getApiCode(param: Record<string, unknown> = {}, setLoading?: LoadingMethod) {
+  return queryHttpOrigin<ApiCode[]>({ apiCode: 'GET_API_CODE', ...param }, setLoading)
+}
+
+export type ApiCodeDetail = {
+  apiSql: string
+} & ApiCode
+
+export function getApiCodeDetail(param: Record<string, unknown> = {}, setLoading?: LoadingMethod) {
+  return queryHttp<ApiCodeDetail[]>({ apiCode: 'GET_API_CODE_DETAIL', param }, setLoading)
+}
+
+export function updateApiCodeDetail(param: ApiCodeDetail, setLoading?: LoadingMethod) {
+  return execHttp<number>({ apiCode: 'UPDATE_API_CODE_DETAIL', param }, setLoading)
 }

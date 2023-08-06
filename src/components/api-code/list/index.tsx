@@ -1,13 +1,16 @@
-import { getApiCode } from '@/api'
+import { ApiCode, getApiCode } from '@/api'
 import BaseTable from '@/components/base-table'
 import { Refresh } from '@element-plus/icons-vue'
 import { ElButton, ElTag } from 'element-plus'
 import { defineComponent, onActivated, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
 	name: 'ApiCodeList',
 
 	setup(prop, { emit, slots }) {
+		const router = useRouter()
+
 		const tableOption = {
 			data: [],
 			columns: [
@@ -20,7 +23,7 @@ export default defineComponent({
 				{
 					label: 'apiCode',
 					prop: 'apiCode',
-					width: 150,
+					minWidth: 150,
 					sortable: true,
 					filters: [
 						{ text: 'Y', value: 'Y' },
@@ -30,16 +33,17 @@ export default defineComponent({
 				{
 					label: 'apiType',
 					prop: 'apiType',
-					width: 120,
+					minWidth: 120,
 				},
 				{
 					label: 'description',
 					prop: 'description',
-					width: 120,
+					minWidth: 120,
 				},
 				{
 					label: 'state',
 					prop: 'stateTxt',
+					minWidth: 120,
 					slots: {
 						default: (row: any) => {
 							const { state, stateTxt } = row
@@ -52,7 +56,7 @@ export default defineComponent({
 				{
 					label: 'updateTime',
 					prop: 'updateTime',
-					width: 120,
+					minWidth: 180,
 				},
 				{
 					label: 'operate',
@@ -60,11 +64,11 @@ export default defineComponent({
 					width: 160,
 					fixed: 'right',
 					slots: {
-						default: (row: any, prop: string) => {
+						default: (row: ApiCode, prop: string) => {
 							const { state } = row
 							return (
 								<>
-									<ElButton type="primary" size="mini">详情</ElButton>
+									<ElButton type="primary" size="mini" data-type="code">详情</ElButton>
 									<ElButton type={ state === 1 ? 'danger' : 'warning' } data-state={ state } size="mini">{ state === 1 ? '停用' : '启用' }</ElButton>
 								</>
 							)
@@ -90,8 +94,13 @@ export default defineComponent({
 			tableOption,
 		})
 
-		function onCellClick(...params: unknown[]) {
-			console.log(params)
+		function onCellClick(...params: [ApiCode, any, unknown, MouseEvent]) {
+			const [row, column, , e] = params
+
+			const target = e.target as HTMLElement
+			if (target.dataset.type || target.parentElement?.dataset.type) {
+				router.push({ path: `/apiCode/${ row.apiCode }` })
+			}
 		}
 
 		function onSortChange(params: Record<string, unknown>) {

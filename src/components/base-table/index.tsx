@@ -1,3 +1,4 @@
+import { useLoading } from '@/hook'
 import { ElLoading, ElPagination, ElTable } from 'element-plus'
 import { defineComponent, PropType, ref, watch } from 'vue'
 import BaseTableColumns from './Columns'
@@ -11,21 +12,9 @@ export default defineComponent({
   },
 
   setup(prop, { emit, slots }) {
+    const [wrapRef, setLoading] = useLoading()
 
-    const wrapRef = ref()
-    const loadingRef = ref()
-
-    watch(() => prop.option?.loading as boolean, (v) => changeLoadingState(v))
-
-    function changeLoadingState(loading: boolean) {
-      if (!loadingRef.value) {
-        loading && (loadingRef.value = ElLoading.service({ target: wrapRef.value }))
-        return
-      }
-
-      loadingRef.value?.close()
-      loadingRef.value = null
-    }
+    watch(() => prop.option?.loading, (v: boolean) => setLoading(v))
 
     return {
       wrapRef,

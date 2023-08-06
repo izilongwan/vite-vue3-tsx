@@ -1,9 +1,10 @@
 import { addBlogDetail, BlogDetail, getBlogDetail, updateBlogDetail } from '@/api'
+import { useLoading } from '@/hook'
 import style from '@/style/blog_edit.module.less'
 import { ArrowLeftBold, CircleCheck } from '@element-plus/icons-vue'
 import { ElButton, ElMessage } from 'element-plus'
 import Vditor from 'vditor'
-import 'vditor/src/style/less/index.less'
+import 'vditor/dist/index.css'
 import { defineComponent, InputHTMLAttributes, onActivated, onDeactivated, onMounted, onUnmounted, reactive, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -22,6 +23,7 @@ export default defineComponent({
       code: route.params.code as string,
       data: { author: 'izilong', } as BlogDetail,
     })
+    const [wrapRef, setLoading] = useLoading()
 
     const vditorRef = shallowRef()
 
@@ -41,7 +43,7 @@ export default defineComponent({
 
     onActivated(() => {
       Object.assign(state, { code: route.params.code })
-      state.code && getBlogDetail(state.code).then(([data]) => {
+      state.code && getBlogDetail(state.code, setLoading).then(([data]) => {
         Object.assign(state, { data })
         const { mdText } = state.data
 
@@ -63,8 +65,8 @@ export default defineComponent({
 
       const callback = state.code ? updateBlogDetail : addBlogDetail
 
-      callback(state.data).then(data => {
-        data >= 1
+      callback(state.data, setLoading).then(data => {
+        data.data >= 1
           ? ElMessage({ message: 'ok', type: 'success' })
           : ElMessage({ message: 'fail', type: 'warning' })
       })
@@ -74,7 +76,7 @@ export default defineComponent({
       state.data[prop] = (e.target as InputHTMLAttributes).value
     }
 
-    return { state, router, addOrSaveMd, valueChange }
+    return { state, wrapRef, router, addOrSaveMd, valueChange }
   },
 
   render() {
@@ -82,7 +84,7 @@ export default defineComponent({
     const { data } = state
 
     return (
-      <div class={ style.container }>
+      <div class={ style.container } ref={ ref => this.wrapRef = ref }>
         <fieldset>
           <legend onClick={ () => router.push('/blog') }>
             <ElButton size="mini"><ArrowLeftBold />返 回</ElButton>
@@ -118,7 +120,7 @@ export default defineComponent({
           </fieldset>
 
 
-          <ElButton class={ style.save_btn } type="primary" size="mini" onClick={ addOrSaveMd } circle>
+          <ElButton class="save_btn" type="primary" size="mini" onClick={ addOrSaveMd } circle>
             <CircleCheck /> SAVE
           </ElButton>
         </fieldset>

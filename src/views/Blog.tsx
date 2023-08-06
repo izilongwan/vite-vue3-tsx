@@ -1,4 +1,5 @@
 import { Blog, getBlogs } from '@/api'
+import { useLoading } from '@/hook'
 import style from '@/style/blog.module.less'
 import { Edit, Refresh, View } from '@element-plus/icons-vue'
 import { ElButton } from 'element-plus'
@@ -13,6 +14,7 @@ export default defineComponent({
     const state = reactive({
       list: [] as Blog[],
     })
+    const [wrapRef, setLoading] = useLoading()
 
     const router = useRouter()
 
@@ -23,7 +25,7 @@ export default defineComponent({
     })
 
     function getBlogAction() {
-      return getBlogs().then(list => Object.assign(state, { list }))
+      return getBlogs(setLoading).then(list => Object.assign(state, { list }))
     }
 
     function onItemClick(e: Event) {
@@ -40,6 +42,7 @@ export default defineComponent({
 
     return {
       state,
+      wrapRef,
       onItemClick,
       getBlogAction,
     }
@@ -50,7 +53,7 @@ export default defineComponent({
     const { list } = state
 
     return (
-      <div class={ style.container }>
+      <div class={ style.container } ref={ ref => this.wrapRef = ref }>
         <fieldset>
           <legend onClick={ getBlogAction }>
             <ElButton size="mini"><Refresh />刷 新</ElButton>

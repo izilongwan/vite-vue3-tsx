@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/ApiCode')
       },
       {
-        path: '/apiCode-detail/:code',
+        path: '/apiCode/:code',
         name: 'apiCodeDetail',
         meta: {
           type: 'apiCodeDetail',
