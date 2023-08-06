@@ -1,5 +1,6 @@
 import { ApiCode, getApiCode } from '@/api'
 import BaseTable from '@/components/base-table'
+import { useLoading } from '@/hook'
 import { Refresh } from '@element-plus/icons-vue'
 import { ElButton, ElTag } from 'element-plus'
 import { defineComponent, onActivated, reactive, toRefs } from 'vue'
@@ -10,42 +11,72 @@ export default defineComponent({
 
 	setup(prop, { emit, slots }) {
 		const router = useRouter()
+		const [wrapRef, setLoading] = useLoading()
 
 		const tableOption = {
 			data: [],
 			columns: [
 				{
-					label: 'Index',
+					label: '序号',
 					prop: 'index',
 					type: 'index',
 					width: 100,
 				},
 				{
-					label: 'apiCode',
+					label: '编码',
 					prop: 'apiCode',
 					minWidth: 150,
-					sortable: true,
-					filters: [
-						{ text: 'Y', value: 'Y' },
-						{ text: 'N', value: 'N' },
-					],
+					sortable: 'custom',
+					panelType: 'search',
 				},
 				{
-					label: 'apiType',
+					label: '类型',
 					prop: 'apiType',
 					minWidth: 120,
+					columnKey: 'apiType',
+					filters: [
+						{
+							text: '查询 [QUERY]',
+							value: 'QUERY'
+						},
+						{
+							text: '更新 [UPDATE]',
+							value: 'UPDATE'
+						},
+						{
+							text: '新增 [INSERT]',
+							value: 'INSERT'
+						},
+						{
+							text: '删除 [DELETE]',
+							value: 'DELETE'
+						}
+					],
+					slots: {
+						default(row: ApiCode, prop: string) {
+							return (
+								<ElTag type="warning">{ row[prop as keyof typeof row] }</ElTag>
+							)
+						}
+					}
 				},
 				{
-					label: 'description',
+					label: '描述',
 					prop: 'description',
 					minWidth: 120,
+					panelType: 'search',
 				},
 				{
-					label: 'state',
+					label: '状态',
 					prop: 'stateTxt',
 					minWidth: 120,
+					columnKey: 'state',
+					filters: [
+						{ text: '已启用', value: 1 },
+						{ text: '已停用', value: 0 },
+					],
 					slots: {
-						default: (row: any) => {
+						default: (row: ApiCode) => {
 							const { state, stateTxt } = row
 							return (
 								<ElTag type={ state == 1 ? 'success' : 'danger' }>{ stateTxt }</ElTag>
@@ -54,12 +85,14 @@ export default defineComponent({
 					}
 				},
 				{
-					label: 'updateTime',
+					label: '更新时间',
 					prop: 'updateTime',
 					minWidth: 180,
+					panelType: 'search',
+					sortable: 'custom',
 				},
 				{
-					label: 'operate',
+					label: '操作',
 					prop: 'operate',
 					width: 160,
 					fixed: 'right',
@@ -77,13 +110,15 @@ export default defineComponent({
 				},
 			],
 			stripe: true,
-			maxHeight: 580,
+			maxHeight: 610,
 			onCellClick,
-			onSortChange,
-			onFilterChange,
+			onSortChange: getApiCodeAction,
+			onFilterChange: getApiCodeAction,
+			filterObj: {},
+			sortObj: {},
 			pagination: {
-				onSizeChange,
-				onCurrentChange,
+				onSizeChange: getApiCodeAction,
+				onCurrentChange: getApiCodeAction,
 				total: 0,
 				currentPage: 1,
 				pageSize: 10,
@@ -94,31 +129,13 @@ export default defineComponent({
 			tableOption,
 		})
 
-		function onCellClick(...params: [ApiCode, any, unknown, MouseEvent]) {
+		function onCellClick(...params: [ApiCode, unknown, unknown, MouseEvent]) {
 			const [row, column, , e] = params
-
 			const target = e.target as HTMLElement
+
 			if (target.dataset.type || target.parentElement?.dataset.type) {
 				router.push({ path: `/apiCode/${ row.apiCode }` })
 			}
-		}
-
-		function onSortChange(params: Record<string, unknown>) {
-			console.log(params)
-		}
-
-		function onFilterChange(params: Record<string, unknown>) {
-			console.log(params)
-		}
-
-		function onSizeChange(pageSize: number) {
-			Object.assign(state.tableOption.pagination, { pageSize })
-			getApiCodeAction()
-		}
-
-		function onCurrentChange(currentPage: number) {
-			Object.assign(state.tableOption.pagination, { currentPage })
-			getApiCodeAction()
 		}
 
 		onActivated(() => {
@@ -127,18 +144,27 @@ export default defineComponent({
 
 		function getApiCodeAction() {
 			const { tableOption } = state
-			const { pageSize, currentPage: pageIndex } = tableOption.pagination
+			const { pagination, filterObj = {}, sortObj = {} } = tableOption
+			const { pageSize, currentPage: pageIndex } = pagination
 
-			Object.assign(tableOption, { loading: true })
-			getApiCode({ pageSize, pageIndex }).then(({ data, total }) => {
+			const param = {
+				pageSize,
+				pageIndex,
+				param: {
+					...filterObj,
+					...sortObj,
+				}
+			}
+
+			getApiCode(param, setLoading).then(({ data, total }) => {
 				Object.assign(tableOption.pagination, { total })
 				Object.assign(tableOption, { data })
 			})
-				.finally(() => Object.assign(tableOption, { loading: false }))
 		}
 
 		return {
 			...toRefs(state),
+			wrapRef,
 			getApiCodeAction,
 		}
 	},
@@ -152,7 +178,9 @@ export default defineComponent({
 					<Refresh /> 刷新
 				</ElButton>
 
-				<BaseTable option={ tableOption } />
+				<div ref={ ref => this.wrapRef = ref }>
+					<BaseTable option={ tableOption } />
+				</div>
 			</div>
 		)
 	},

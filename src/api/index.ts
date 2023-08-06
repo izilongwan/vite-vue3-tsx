@@ -45,6 +45,7 @@ export interface ApiCode {
   description: string;
   apiType: string;
   infoJson: string
+  stateTxt: string
 }
 
 export function getApiCode(param: Record<string, unknown> = {}, setLoading?: LoadingMethod) {

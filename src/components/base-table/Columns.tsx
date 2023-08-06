@@ -2,41 +2,58 @@ import { ElTableColumn } from 'element-plus'
 import { RenderRowData } from 'element-plus/lib/el-table/src/table/defaults'
 import { defineComponent, PropType } from 'vue'
 import BaseTableColumns from './Columns'
+import ColumnLabel from './ColumnLabel'
+import { FilterParam } from './data'
 
 export default defineComponent({
   name: 'BaseTableColumns',
 
   props: {
     columns: Array as PropType<Record<string, any>[]>,
-    pagination: Object as PropType<Record<string, number>>
+    pagination: Object as PropType<Record<string, number>>,
+    onFilterChange: Function as PropType<(filterObj: FilterParam) => void>
   },
 
   setup(prop, { emit, slots }) {
-    return {
-    }
+    return {}
   },
 
   render() {
-    const { columns = [], pagination } = this.$props
+    const { columns = [], pagination, onFilterChange = (e) => { } } = this.$props
     const { currentPage, pageSize } = pagination!
 
-    return (
-      columns.map(c => (
-        c.children?.length
-          ? (
-            <ElTableColumn { ...c } key={ c.prop }>
-              <>
-                <BaseTableColumns columns={ c.children as Record<string, object>[] } />
-              </>
-            </ElTableColumn>
-          )
-          : <ElTableColumn { ...c } key={ c.prop }>
-            { (data: RenderRowData<any>) => renderTableColumn(data, c, (currentPage - 1) *
-              pageSize) }
-          </ElTableColumn>
-      ))
+    return columns.map((c) =>
+      c.children?.length ? (
+        <ElTableColumn
+          { ...c }
+          key={ c.prop }
+          label={
+            <ColumnLabel
+              column={ c }
+              onFilterChange={ onFilterChange }
+            /> }>
+          <>
+            <BaseTableColumns
+              columns={ c.children as Record<string, object>[] }
+            />
+          </>
+        </ElTableColumn>
+      ) : (
+        <ElTableColumn
+          { ...c }
+          key={ c.prop }
+          label={
+            <ColumnLabel
+              column={ c }
+              onFilterChange={ onFilterChange }
+            /> }>
+          { (data: RenderRowData<any>) =>
+            renderTableColumn(data, c, (currentPage - 1) * pageSize)
+          }
+        </ElTableColumn>
+      )
     )
-  },
+  }
 })
 
 function renderTableColumn(data: RenderRowData<any>, column: Record<string, any>, baseNum: number) {

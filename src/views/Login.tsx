@@ -39,7 +39,7 @@ export default defineComponent({
         if (valid) {
           if (data.user.name === 'admin' && data.user.password === '123456') {
             router.push({
-              name: 'home'
+              name: '/'
             })
 
             localStorage.setItem('user', JSON.stringify(data.user))
