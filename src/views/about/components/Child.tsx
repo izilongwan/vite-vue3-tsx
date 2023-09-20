@@ -1,6 +1,6 @@
 import { ElButton } from 'element-plus'
-import { RenderComponent } from './RenderComponent'
 import { defineComponent, PropType, ref } from 'vue'
+import { RenderComponent } from './RenderComponent'
 
 export const validatorComponentSize = (value: string): boolean =>
   ['', 'large', 'medium', 'small', 'mini'].includes(value)

@@ -1,8 +1,8 @@
-import Child from '@/components/Child'
-import UserInfo from '@/components/UserInfo'
 import { SET_USER } from '@/store/login/actionType'
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
+import Child from './components/Child'
+import UserInfo from './components/UserInfo'
 
 export default defineComponent({
   name: 'About',

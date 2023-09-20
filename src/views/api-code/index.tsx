@@ -1,5 +1,5 @@
-import List from '@/components/api-code/list'
 import { defineComponent } from 'vue'
+import List from './components/list'
 
 export default defineComponent({
 	name: 'ApiCode',

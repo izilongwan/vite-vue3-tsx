@@ -1,9 +1,9 @@
-import { defineComponent, onActivated, reactive } from 'vue'
-import ApiCodeDetailContent from '@/components/api-code-detail/content'
-import { useRoute } from 'vue-router'
 import { ApiCodeDetail, getApiCodeDetail, updateApiCodeDetail } from '@/api'
-import { ElMessage } from 'element-plus'
 import { useLoading } from '@/hook'
+import { ElMessage } from 'element-plus'
+import { defineComponent, onActivated, reactive } from 'vue'
+import { useRoute } from 'vue-router'
+import ApiCodeDetailContent from './components/content'
 
 export default defineComponent({
 	name: 'ApiCodeDetail',

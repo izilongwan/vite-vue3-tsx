@@ -30,12 +30,13 @@ export default defineComponent({
   },
 
   render() {
-    const { columns, ...other } = this.$props.option
+    const { option } = this.$props
+    const { columns, ...other } = option
     const { pagination } = this
     const tableOption = {
       ...other,
-      onFilterChange: onFormatFilterChange(this.$props.option) as (param: FilterParam) => void,
-      onSortChange: onFormatSortChange(this.$props.option)
+      onFilterChange: onFormatFilterChange(option),
+      onSortChange: onFormatSortChange(option)
     }
 
     return (

@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
       type: '/',
       menu: true,
     },
-    component: () => import('@/views/Home'),
+    component: () => import('@/views/home'),
     children: [
       {
         path: '/about',
@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
           type: 'about',
           menu: true,
         },
-        component: () => import('@/views/About')
+        component: () => import('@/views/about')
       },
       {
         path: '/blog',
@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
           type: 'blog',
           menu: true,
         },
-        component: () => import('@/views/Blog')
+        component: () => import('@/views/blog')
       },
       {
         path: '/blog-detail/:code',
@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
           type: 'blogDetail',
           menu: false,
         },
-        component: () => import('@/views/BlogDetail')
+        component: () => import('@/views/blog-detail')
       },
       {
         path: '/blog-edit/:code?',
@@ -52,7 +52,7 @@ const routes: RouteRecordRaw[] = [
           type: 'blogEdit',
           menu: false,
         },
-        component: () => import('@/views/BlogEdit')
+        component: () => import('@/views/blog-edit')
       },
       {
         path: '/apiCode',
@@ -61,7 +61,7 @@ const routes: RouteRecordRaw[] = [
           type: 'apiCode',
           menu: true,
         },
-        component: () => import('@/views/ApiCode')
+        component: () => import('@/views/api-code')
       },
       {
         path: '/apiCode/:code',
@@ -70,7 +70,7 @@ const routes: RouteRecordRaw[] = [
           type: 'apiCodeDetail',
           menu: false,
         },
-        component: () => import('@/views/ApiCodeDetail')
+        component: () => import('@/views/api-code-detail')
       },
     ],
   },
@@ -80,7 +80,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       type: 'login'
     },
-    component: () => import('@/views/Login')
+    component: () => import('@/views/login')
   },
   {
     path: '/:pathMatch(.*)*',
@@ -120,7 +120,7 @@ const addRoutes: RouteRecordRaw[] = [
     meta: {
       menu: true,
     },
-    component: () => import('@/views/UserSearch')
+    component: () => import('@/views/user-search')
   },
 ]
 
