@@ -1,9 +1,8 @@
-import { ApiCode, getApiCode } from '@/api'
+import { ApiCode } from '@/api'
 import BaseTable from '@/components/base-table'
-import { useLoading } from '@/hook'
 import { Refresh } from '@element-plus/icons-vue'
 import { ElButton, ElTag } from 'element-plus'
-import { defineComponent, onActivated, reactive, toRefs } from 'vue'
+import { defineComponent, onActivated, reactive, ref, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -11,7 +10,7 @@ export default defineComponent({
 
 	setup(prop, { emit, slots }) {
 		const router = useRouter()
-		const [wrapRef, setLoading] = useLoading()
+		const tableRef = ref()
 
 		const tableOption = {
 			data: [],
@@ -112,13 +111,15 @@ export default defineComponent({
 			stripe: true,
 			maxHeight: 610,
 			onCellClick,
-			onSortChange: getApiCodeAction,
-			onFilterChange: getApiCodeAction,
+			apiCode: 'GET_API_CODE',
+			param: {},
+			// onSortChange: getApiCodeAction,
+			// onFilterChange: getApiCodeAction,
 			filterObj: {},
 			sortObj: {},
 			pagination: {
-				onSizeChange: getApiCodeAction,
-				onCurrentChange: getApiCodeAction,
+				// onSizeChange: getApiCodeAction,
+				// onCurrentChange: getApiCodeAction,
 				total: 0,
 				currentPage: 1,
 				pageSize: 10,
@@ -143,28 +144,12 @@ export default defineComponent({
 		})
 
 		function getApiCodeAction() {
-			const { tableOption } = state
-			const { pagination, filterObj = {}, sortObj = {} } = tableOption
-			const { pageSize, currentPage: pageIndex } = pagination
-
-			const param = {
-				pageSize,
-				pageIndex,
-				param: {
-					...filterObj,
-					...sortObj,
-				}
-			}
-
-			getApiCode(param, setLoading).then(({ data, total }) => {
-				Object.assign(tableOption.pagination, { total })
-				Object.assign(tableOption, { data })
-			})
+			tableRef.value?.getTableData?.()
 		}
 
 		return {
 			...toRefs(state),
-			wrapRef,
+			tableRef,
 			getApiCodeAction,
 		}
 	},
@@ -178,9 +163,7 @@ export default defineComponent({
 					<Refresh /> 刷新
 				</ElButton>
 
-				<div ref={ ref => this.wrapRef = ref }>
-					<BaseTable option={ tableOption } />
-				</div>
+				<BaseTable ref={ ref => this.tableRef = ref } option={ tableOption } />
 			</div>
 		)
 	},
