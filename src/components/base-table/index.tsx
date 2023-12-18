@@ -50,7 +50,7 @@ export default defineComponent({
 
     return (
       <div ref={ ref => this.wrapRef = ref }>
-        <ElTable { ...tableOption }>
+        <ElTable { ...tableOption as any }>
           <BaseTableColumns
             columns={ columns as Record<string, unknown>[] }
             pagination={ pagination }
