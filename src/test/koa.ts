@@ -41,7 +41,7 @@ const fns = [
   },
   (next: TypeCommonFn) => {
     console.log('fn2 start');
-    // next();
+    next();
     console.log('fn2 end');
   },
   (next: TypeCommonFn) => {
@@ -51,4 +51,4 @@ const fns = [
   },
 ]
 
-koa.use(fns).run().run();
+// koa.use(fns).run().run();
