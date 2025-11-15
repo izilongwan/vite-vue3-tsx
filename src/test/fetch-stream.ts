@@ -1,5 +1,5 @@
-export function fetchStream() {
-  fetch('http://127.0.0.1:9000/file/stream/1.mp4')
+export function fetchStream(filename: string) {
+  fetch(`http://127.0.0.1:9000/file/stream/${ filename }`)
     .then(async rs => {
       const total = Number(rs.headers.get('Content-Length'));
       const reader = rs.body?.getReader();
