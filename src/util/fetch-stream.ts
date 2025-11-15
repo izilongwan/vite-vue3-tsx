@@ -14,7 +14,8 @@ export function fetchStream(filename: string) {
           console.log(url);
           break;
         }
-        console.log(size += value.length, total, size / total);
+        size += value.length;
+        console.log((size / total * 100).toFixed(2) + '%');
         chunks.push(value);
       }
 
@@ -33,3 +34,5 @@ export function fetchStream(filename: string) {
     }
     )
 }
+
+// fetchStream('1.mp4');
