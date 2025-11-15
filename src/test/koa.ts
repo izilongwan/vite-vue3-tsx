@@ -10,15 +10,12 @@ export class Koa {
   }
 
   run() {
-    this.#doRun(true);
+    this.#runningQueue = [...this.#queue];
+    this.#doRun();
     return this;
   }
 
-  #doRun(isInit = false) {
-    if (isInit) {
-      this.#runningQueue = [...this.#queue];
-    }
-
+  #doRun() {
     const next = () => {
       const fn = this.#runningQueue.shift();
       if (fn) {
