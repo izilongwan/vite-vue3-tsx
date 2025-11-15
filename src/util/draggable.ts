@@ -55,8 +55,10 @@ export class Draggable {
 
     if (this.#canScale && this.#diffX <= 10 && this.#diffY <= 10) {
       this.#isScale = true;
+      this.#element.style.cursor = 'nwse-resize';
     } else {
       this.#isDragging = true;
+      this.#element.style.cursor = 'grabbing';
     }
     this.#element.style.position = 'absolute'
     this.#element.style.zIndex = this.#zIndex.toString();
@@ -91,12 +93,12 @@ export class Draggable {
 
     this.#element.style.left = `${ x }px`
     this.#element.style.top = `${ y }px`
+    this.#element.style.cursor = 'grabbing';
     this.listenDragging(this.#option.draggableCb);
   }
 
   #onMouseMove(event: MouseEvent) {
     this.#onMouseMoveDragging(event);
-
     this.#onMouseMoveScaling(event);
   }
 
@@ -127,12 +129,14 @@ export class Draggable {
     this.#size[1] = height;
     this.#element.style.width = `${ width }px`
     this.#element.style.height = `${ height }px`
+    this.#element.style.cursor = 'nwse-resize';
     this.listenScaling(this.#option.scaleCb);
   }
 
   #onMouseUp() {
     this.#isDragging = false
     this.#isScale = false;
+    this.#element.style.cursor = 'default';
   }
 
   listenDragging(cb?: TypeCommonFn) {
