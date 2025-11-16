@@ -18,12 +18,12 @@ export class ConcurrentRequest {
 
     while (maxCount--) {
       const request = this.#queue.shift();
-      this.#limitCount--;
       this.#handleRequest(request!, this.#resultIndex++);
     }
   }
 
   #handleRequest(request: ConcurrentRequestOptions['queue'][number], index: number) {
+    this.#limitCount--;
     request()
       .then((res) => {
         this.#results[index] = {
