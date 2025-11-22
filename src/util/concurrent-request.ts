@@ -3,7 +3,7 @@ export class ConcurrentRequest {
   #queue: ConcurrentRequestOptions['queue'] = [];
   #resultIndex = 0;
   #results: Array<{
-    result: any;
+    result: object | null;
     error?: Error
   }> = [];
 
@@ -18,7 +18,7 @@ export class ConcurrentRequest {
 
     while (maxCount--) {
       const request = this.#queue.shift();
-      this.#handleRequest(request!, this.#resultIndex++);
+      this.#handleRequest(request, this.#resultIndex++);
     }
   }
 
@@ -49,5 +49,5 @@ export class ConcurrentRequest {
 
 interface ConcurrentRequestOptions {
   limitCount: number;
-  queue: Array<() => Promise<any>>;
+  queue: Array<() => Promise<object>>;
 }
