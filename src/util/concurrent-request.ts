@@ -1,3 +1,5 @@
+import { TypePromiseFn } from '@/d.types/common';
+
 export class ConcurrentRequest {
   #limitCount: ConcurrentRequestOptions['limitCount'] = 3;
   #queue: ConcurrentRequestOptions['queue'] = [];
@@ -10,10 +12,9 @@ export class ConcurrentRequest {
   constructor({ limitCount, queue }: ConcurrentRequestOptions) {
     this.#limitCount = limitCount;
     this.#queue = queue;
-    this.#doRunRequests();
   }
 
-  #doRunRequests() {
+  #doRun() {
     let maxCount = Math.min(this.#limitCount, this.#queue.length);
 
     while (maxCount--) {
@@ -22,7 +23,7 @@ export class ConcurrentRequest {
     }
   }
 
-  #handleRequest(request: ConcurrentRequestOptions['queue'][number], index: number) {
+  #handleRequest(request: TypePromiseFn, index: number) {
     this.#limitCount--;
     request()
       .then((res) => {
@@ -38,8 +39,20 @@ export class ConcurrentRequest {
       })
       .finally(() => {
         this.#limitCount++;
-        this.#doRunRequests();
+        this.#doRun();
       });
+  }
+
+  add(request: TypePromiseFn | TypePromiseFn[]) {
+    if (Array.isArray(request)) {
+      this.#queue.push(...request);
+    } else {
+      this.#queue.push(request);
+    }
+  }
+
+  run() {
+    this.#doRun();
   }
 
   getResults() {
@@ -49,5 +62,5 @@ export class ConcurrentRequest {
 
 interface ConcurrentRequestOptions {
   limitCount: number;
-  queue: Array<() => Promise<object>>;
+  queue: Array<TypePromiseFn>;
 }
