@@ -9,6 +9,7 @@ type HttpParam = RequestInit & {
   timeout?: number
   abortController?: AbortController;
   cacheTimeout?: number;
+  withCredentials?: boolean;
 }
 
 export interface HttpResponse<T = any> {
@@ -29,6 +30,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
     data: body = param.method === 'GET' ? undefined : {},
     timeout = 1000 * 10,
     abortController = new AbortController(),
+    withCredentials,
     cacheTimeout = 200 } = param
 
   const key = JSON.stringify(param);
@@ -46,6 +48,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
       method,
       signal: abortController.signal,
       body: JSON.stringify(body),
+      credentials: withCredentials ? 'include' : 'same-origin',
       headers: {
         'Content-Type': 'application/json',
       }
