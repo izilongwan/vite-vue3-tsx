@@ -26,7 +26,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
   const {
     method = 'POST',
     url = VITE_API_URL_QUERY,
-    data: body = {},
+    data: body = param.method === 'GET' ? undefined : {},
     timeout = 1000 * 10,
     abortController = new AbortController(),
     cacheTimeout = 200 } = param
@@ -60,7 +60,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
 
   const timeoutFn = (key: string) => new Promise<HttpResponse<T>>((resolve, reject) => {
     setTimeout(() => {
-      abortController.abort()
+      abortController.abort("Timeout abort");
       cacheMap.delete(key);
       reject({
         code: 500,
