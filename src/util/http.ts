@@ -1,6 +1,5 @@
 import { TypeCommonObject } from '@/d.types/common';
-import { LoadingMethod } from '@/hook'
-import { nextTick } from 'vue';
+import { LoadingMethod } from '@/hook';
 
 const { VITE_API_URL_QUERY, VITE_API_URL_EXEC } = import.meta.env
 
@@ -37,7 +36,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
     method = 'POST',
     url = VITE_API_URL_QUERY,
     data: body = param.method === 'GET' ? undefined : {},
-    timeout = 1000 * 2,
+    timeout = 1000 * 10,
     abortController = new AbortController(),
     withCredentials,
     cacheTimeout = 200,
@@ -93,6 +92,8 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
     requestFn.retryCount ??= 1;
     if (requestFn.retryCount < maxRetries) {
       requestFn.retryCount++;
+      requestFn.abortController.abort({ code: 500, message: `请求错误` });
+      cacheMap.delete(key);
       requestFn.abortController = new AbortController();
       signal = requestFn.abortController.signal;
       return await Promise.race([requestFn(), timeoutFn()]);
