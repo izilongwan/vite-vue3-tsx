@@ -9,10 +9,11 @@ export function deepClone<T extends TypeCommonObject>(target: T, source: T = <T>
       return target;
     }
 
-    const constructor = target.constructor as DateConstructor | RegExpConstructor | ArrayConstructor | ObjectConstructor;
+    const constructor = target.constructor;
+    const regDateConstructor = <RegExpConstructor | DateConstructor> constructor;
 
-    if (CONSTRUCTORS_LIST.includes(constructor)) {
-      return new (<RegExpConstructor> constructor)(<any> target);
+    if (CONSTRUCTORS_LIST.includes(regDateConstructor)) {
+      return new regDateConstructor(<any> target);
     }
 
     if (weakMap.has(target)) {
