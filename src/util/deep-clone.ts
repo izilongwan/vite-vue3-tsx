@@ -1,6 +1,6 @@
-type CommonObj = Record<string, any>;
+import { TypeCommonObject } from '@/d.types/common';
 
-export function deepClone<T extends CommonObj>(target: T, source: T = <T> {}): T {
+export function deepClone<T extends TypeCommonObject>(target: T, source: T = <T> {}): T {
   const weakMap = new WeakMap();
   const CONSTRUCTORS_LIST = [Date, RegExp];
 
@@ -9,32 +9,27 @@ export function deepClone<T extends CommonObj>(target: T, source: T = <T> {}): T
       return target;
     }
 
+    const constructor = target.constructor as DateConstructor | RegExpConstructor | ArrayConstructor | ObjectConstructor;
+
+    if (CONSTRUCTORS_LIST.includes(constructor)) {
+      return new (<RegExpConstructor> constructor)(<any> target);
+    }
+
     if (weakMap.has(target)) {
       return weakMap.get(target);
     }
 
+    const cloneObj: TypeCommonObject = new (<ArrayConstructor | ObjectConstructor> constructor)();
+
+    weakMap.set(target, cloneObj);
+
     for (const key in target) {
-      if (!Object.hasOwn(target, key)) {
-        continue;
+      if (Object.hasOwn(target, key)) {
+        cloneObj[key] = _(target[key], weakMap);
       }
-
-      const value = target[key];
-
-      if (CONSTRUCTORS_LIST.includes(value.constructor)) {
-        return new value.constructor(value);
-      }
-
-      const cloneObj = new value.constructor();
-
-      cloneObj[key] = _(value, weakMap);
-
-      if (cloneObj && typeof cloneObj === 'object') {
-        weakMap.set(value, cloneObj);
-      }
-
-      return cloneObj;
     }
 
+    return cloneObj;
   })(target, weakMap);
 
   return Object.assign(source, cloneObj);
