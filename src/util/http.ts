@@ -25,6 +25,15 @@ export interface HttpResponse<T = any> {
   status?: number;
 }
 
+export const enum HttpStatus {
+  ABORTED = 20,
+  SUCCESS = 200,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  SERVER_ERROR = 500,
+}
+
 export interface RequestFn<T> {
   (): Promise<HttpResponse<T>>;
   retryCount?: number;
@@ -67,16 +76,20 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
       .then(json => json.json() as unknown as HttpResponse<T>)
       .then(rs => {
         // 错误响应
-        if (rs.status === 500) {
+        if (rs.status === HttpStatus.SERVER_ERROR) {
+          rs.code = HttpStatus.SERVER_ERROR;
           throw rs;
         }
         return rs;
       })
       .catch(async err => {
-        const retryResult = await retryRequest();
-        if (retryResult) {
-          return retryResult;
+        if ([HttpStatus.ABORTED, HttpStatus.SERVER_ERROR].includes(err.code)) {
+          const retryResult = await retryRequest();
+          if (retryResult) {
+            return retryResult;
+          }
         }
+
         throw err;
       })
       .finally(() => setLoading?.(false))
@@ -92,7 +105,7 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
     requestFn.retryCount ??= 1;
     if (requestFn.retryCount < maxRetries) {
       requestFn.retryCount++;
-      requestFn.abortController.abort({ code: 500, message: `请求错误` });
+      requestFn.abortController.abort({ code: HttpStatus.SERVER_ERROR, message: `请求错误` });
       cacheMap.delete(key);
       requestFn.abortController = new AbortController();
       signal = requestFn.abortController.signal;
@@ -102,9 +115,9 @@ export function http<T>(param: HttpParam, setLoading?: LoadingMethod) {
 
   const timeoutFn = () => new Promise<HttpResponse<T>>((resolve, reject) => {
     setTimeout(async () => {
-      // reject({ code: 500, message: `请求超时` });
-      requestFn.abortController.abort({ code: 500, message: `请求超时` });
+      requestFn.abortController.abort({ code: HttpStatus.SERVER_ERROR, message: `请求超时` });
       cacheMap.delete(key);
+      reject({ code: HttpStatus.SERVER_ERROR, message: `请求超时` });
     }, timeout);
   })
     .finally(() => setLoading?.(false))
