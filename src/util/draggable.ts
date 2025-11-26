@@ -1,7 +1,8 @@
-import { TypeCommonFn } from '@/d.types/common'
+import { TypeCommonFn } from '@/d.types/common';
 
 export interface DraggableOption {
-  el: HTMLElement,
+  dragElement: HTMLElement,
+  containerElement?: HTMLElement,
   zIndex?: number;
   isScale?: boolean;
   minSize?: [number, number];
@@ -12,7 +13,8 @@ export interface DraggableOption {
 }
 
 export class Draggable {
-  #element: HTMLElement
+  #containerElement: HTMLElement;
+  #dragElement: HTMLElement;
   #isDragging: boolean = false;
   #isScale: boolean = false;
   #offsetX: number = 0
@@ -25,11 +27,13 @@ export class Draggable {
   #canScale: boolean = true;
   #minSize: DraggableOption['minSize'] = [50, 50];
   #maxSize: DraggableOption['maxSize'] = [window.innerWidth, window.innerHeight];
-  #option: DraggableOption
+  #option: DraggableOption;
+  #DRAGGABLE_ATTR = 'draggable';
 
   constructor(option: DraggableOption) {
-    this.#element = option.el
-    const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = this.#element;
+    this.#containerElement = option.containerElement || option.dragElement;
+    this.#dragElement = option.dragElement;
+    const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = this.#containerElement;
     this.#position = [offsetLeft, offsetTop];
     this.#size = [offsetWidth, offsetHeight];
     this.#zIndex = option.zIndex || this.#zIndex;
@@ -37,17 +41,19 @@ export class Draggable {
     this.#minSize = option.minSize ?? this.#minSize;
     this.#maxSize = option.maxSize ?? this.#maxSize;
     this.#option = option;
-    this.#bindEvent()
+    this.#bindEvent();
   }
 
   #bindEvent() {
-    this.#element.addEventListener('mousedown', this.#onMouseDown.bind(this))
+    this.#containerElement.addEventListener('mousedown', this.#onMouseDown.bind(this))
     document.addEventListener('mousemove', this.#onMouseMove.bind(this))
     document.addEventListener('mouseup', this.#onMouseUp.bind(this))
   }
 
   #onMouseDown(event: MouseEvent) {
-    const rect = this.#element.getBoundingClientRect()
+    const dragElement = this.#dragElement;
+    dragElement.setAttribute(this.#DRAGGABLE_ATTR, this.#DRAGGABLE_ATTR);
+    const rect = dragElement.getBoundingClientRect()
     this.#offsetX = event.clientX - rect.left
     this.#offsetY = event.clientY - rect.top
     this.#diffX = rect.left + this.#size[0] - event.clientX
@@ -55,13 +61,22 @@ export class Draggable {
 
     if (this.#canScale && this.#diffX <= 10 && this.#diffY <= 10) {
       this.#isScale = true;
-      this.#element.style.cursor = 'nwse-resize';
-    } else {
+      dragElement.style.cursor = 'nwse-resize';
+    } else if (this.#checkDragChildrenElement(event.target as HTMLElement)) {
       this.#isDragging = true;
-      this.#element.style.cursor = 'grabbing';
+      dragElement.style.cursor = 'grabbing';
     }
-    this.#element.style.position = 'absolute'
-    this.#element.style.zIndex = this.#zIndex.toString();
+    this.#containerElement.style.position = 'absolute';
+    this.#containerElement.style.zIndex = this.#zIndex.toString();
+  }
+
+  #checkDragChildrenElement(target: HTMLElement): boolean {
+    if (this.#dragElement === target) {
+      return true;
+    }
+
+    const attr = this.#DRAGGABLE_ATTR;
+    return this.#dragElement === target.closest(`[${ attr }="${ this.#dragElement.getAttribute(`${ attr }`) }"]`);
   }
 
   #onMouseMoveDragging(e: MouseEvent) {
@@ -91,9 +106,10 @@ export class Draggable {
     this.#position[0] = x;
     this.#position[1] = y;
 
-    this.#element.style.left = `${ x }px`
-    this.#element.style.top = `${ y }px`
-    this.#element.style.cursor = 'grabbing';
+    const containerElement = this.#containerElement;
+    containerElement.style.left = `${ x }px`;
+    containerElement.style.top = `${ y }px`;
+    this.#dragElement.style.cursor = 'grabbing';
     this.listenDragging(this.#option.draggableCb);
   }
 
@@ -127,16 +143,17 @@ export class Draggable {
 
     this.#size[0] = width;
     this.#size[1] = height;
-    this.#element.style.width = `${ width }px`
-    this.#element.style.height = `${ height }px`
-    this.#element.style.cursor = 'nwse-resize';
+    const containerElement = this.#containerElement;
+    containerElement.style.width = `${ width }px`;
+    containerElement.style.height = `${ height }px`;
+    this.#dragElement.style.cursor = 'nwse-resize';
     this.listenScaling(this.#option.scaleCb);
   }
 
   #onMouseUp() {
     this.#isDragging = false
     this.#isScale = false;
-    this.#element.style.cursor = 'default';
+    this.#dragElement.style.cursor = 'default';
   }
 
   listenDragging(cb?: TypeCommonFn) {
