@@ -1,0 +1,46 @@
+.webreport-page {
+  padding: 10px 20px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.report_main {
+  display: flex;
+  gap: 12px;
+  height: 100%;
+
+  &-left {
+    width: 250px;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.active {
+  color:aqua;
+}
+
+.report_content {
+  /* 播放区域容器，按需设置宽度 */
+  width: 100%;
+  flex: 1;
+}
+
+/* 外层包一层 wrapper，控制比例 */
+.report_content :global(.replayer-wrapper) {
+  position: relative;
+  width: 100%;
+  /* 这里控制比例：16:9 => 56.25%; 4:3 => 75% */
+  padding-top: 56.25%;
+  overflow: hidden;
+}
+
+/* 让 canvas / iframe 绝对定位铺满 wrapper，高度随宽度等比缩放 */
+.report_content :global(.replayer-wrapper canvas),
+.report_content :global(.replayer-wrapper iframe) {
+  position: absolute;
+  inset: 0;       /* 等价于 top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  height: 100%;
+  display: block;
+}

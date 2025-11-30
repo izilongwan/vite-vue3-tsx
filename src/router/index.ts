@@ -1,11 +1,7 @@
-import store, { SET_KEY_VALUE } from '@/store'
+import store, { SET_KEY_VALUE } from '@/store';
 import {
-  createRouter,
-  RouteRecordRaw,
-  NavigationGuardNext,
-  createWebHashHistory,
-  RouteLocationNormalized
-} from 'vue-router'
+  createRouter, createWebHashHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw
+} from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -81,6 +77,14 @@ const routes: RouteRecordRaw[] = [
       type: 'login'
     },
     component: () => import('@/views/login')
+  },
+  {
+    path: '/web-report',
+    name: 'web-report',
+    meta: {
+      type: 'web-report'
+    },
+    component: () => import('@/views/web-report')
   },
   {
     path: '/:pathMatch(.*)*',
