@@ -1,18 +1,34 @@
 import { TypeCommonFn, TypeCommonObject } from '@/d.types/common';
 import { Dep, dep } from './dep';
 
+const weakMap = new WeakMap<TypeCommonObject, TypeCommonObject>();
+
 export function reactive<T extends TypeCommonObject>(data: T): T {
-  return new Proxy(data, {
+  if (weakMap.has(data)) {
+    return weakMap.get(data) as T;
+  }
+
+  const proxy = new Proxy(data, {
     get(target, key, receiver) {
       // console.log(`获取属性${ String(key) }`);
       const value = Reflect.get(target, key, receiver);
-      dep.depend(target, key);
+
+      if (Array.isArray(value)) {
+        dep.depend(value, Symbol.iterator);
+      } else {
+        dep.depend(target, key);
+      }
+
       return typeof value === 'object' && value !== null ? reactive(value) : value;
     },
     set(target, key, value, receiver) {
-      console.log(`设置属性${ String(key) }，新值为${ value }`);
+      // console.log(`设置属性${ String(key) }，新值为${ value }`);
       const oldValue = Reflect.get(target, key, receiver);
       const isOk = Reflect.set(target, key, value, receiver);
+
+      if (isArrayProperty<T>(target, key)) {
+        dep.notify(target, Symbol.iterator, value, oldValue);
+      }
 
       if (Object.is(value, oldValue)) {
         return isOk;
@@ -23,6 +39,19 @@ export function reactive<T extends TypeCommonObject>(data: T): T {
       return isOk;
     },
   });
+
+  weakMap.set(data, proxy);
+
+  return proxy;
+}
+
+export function isArrayProperty<T extends TypeCommonObject>(target: T, key: string | symbol) {
+  return Array.isArray(target) &&
+    (['push', 'pop', 'shift', 'unshift', 'splice'].includes(key as string) || isIndexKey(key));
+}
+
+function isIndexKey(key: any) {
+  return typeof key === "string" && /^\d+$/.test(key);
 }
 
 export function watchEffect(fn: TypeCommonFn) {
@@ -31,10 +60,23 @@ export function watchEffect(fn: TypeCommonFn) {
   Dep.clearEffecFn();
 }
 
-export function watch<T>(watcher: () => T, fn: (value: T, oldValue: T) => void) {
-  Dep.setEffecFn(fn);
-  watcher();
-  Dep.clearEffecFn();
+export function watch<T>(getter: () => T, callback: (value: T, oldValue: T) => void) {
+  let oldValue: T;
+
+  const runner = () => {
+    Dep.setEffecFn(update);
+    const value = getter();
+    Dep.clearEffecFn();
+    return value;
+  };
+
+  const update = () => {
+    const newValue = getter();
+    callback(newValue, oldValue);
+    oldValue = newValue;
+  };
+
+  oldValue = runner();
 }
 
 export interface TypeComputedFn<T = any> {
